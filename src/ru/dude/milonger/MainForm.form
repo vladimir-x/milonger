@@ -46,7 +46,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="3333f" binding="ScrollPane">
+          <scrollpane id="3333f" binding="scrollPane">
             <constraints>
               <splitpane position="left"/>
             </constraints>

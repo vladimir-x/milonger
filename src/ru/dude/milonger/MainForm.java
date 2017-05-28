@@ -1,13 +1,11 @@
 package ru.dude.milonger;
 
-import ru.dude.milonger.utils.FileDrop;
-
+import javax.activation.DataHandler;
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DragSource;
 import java.io.File;
 
 /**
@@ -22,42 +20,23 @@ public class MainForm {
     private JTextField textField1;
     private JTable playTable;
     private JTree tree1;
-    private JScrollPane ScrollPane;
+    private JScrollPane scrollPane;
 
     private void initUIComponents() {
 
-/*
-        TableColumn idCol = new TableColumn();
-        idCol.setHeaderValue("id");
-        idCol.setModelIndex(0);
-        TableColumn nameCol = new TableColumn();
-        idCol.setHeaderValue("name");
-        idCol.setModelIndex(1);
-        playTable.addColumn(nameCol);
-        playTable.setTableHeader(new JTableHeader());
-*/
-
         playTable.setModel(new SongTableModel());
-        playTable.getTableHeader();
-/*
-        playTable.setTransferHandler(new TransferHandler(){
 
+        playTable.setDragEnabled(true);
+        playTable.setDropMode(DropMode.INSERT_ROWS);
 
-        });
-        */
+        SongTransferHandler songTransferHandler = new SongTransferHandler(playTable,scrollPane);
+        playTable.setTransferHandler(songTransferHandler);
+        scrollPane.setTransferHandler(songTransferHandler);
 
-
-        new FileDrop(ScrollPane, new FileDrop.Listener() {
-            @Override
-            public void filesDropped(File[] files) {
-
-                SongTableModel model = (SongTableModel) playTable.getModel();
-
-                for (File f:files){
-                    model.addSong(Song.fromFile(f));
-                }
-            }
-        });
+        File f = new File("D:\\datastudio\\");
+        for (File file : f.listFiles()) {
+            ((SongTableModel) playTable.getModel()).addSong(Song.fromFile(file));
+        }
 
     }
 

@@ -42,4 +42,31 @@ public class SongTableModel extends AbstractTableModel {
         song.setId(identifier++);
         songs.add(song);
     }
+
+    public void putSong(Song song,Integer index) {
+        song.setId(identifier++);
+        songs.add(index,song);
+    }
+
+    public void reorder(int[] rowFrom, int index) {
+
+        //вырезаем
+        List<Song> cutted = new ArrayList<>();
+        for (int i : rowFrom) {
+            cutted.add( songs.get(i));
+            if (i<index) index-=1;
+        }
+        if (index<0)index=0;
+        songs.removeAll(cutted);
+
+        //вставляем
+        for (Song song : cutted) {
+            if (index>=songs.size()){
+                songs.add(song);
+            } else {
+                songs.add(index,song);
+            }
+            index++;
+        }
+    }
 }
