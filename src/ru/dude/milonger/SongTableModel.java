@@ -1,5 +1,6 @@
 package ru.dude.milonger;
 
+import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
@@ -14,9 +15,31 @@ public class SongTableModel extends AbstractTableModel {
 
     private List<Song> songs;
 
+    private List<SongColumnConfig> columns;
 
-    SongTableModel(){
+    JTable playTable;
+
+    SongTableModel(JTable playTable){
+        this.playTable = playTable;
+    }
+
+    public void init(){
         songs = new ArrayList<>();
+        columns = new ArrayList<>();
+
+
+        while (playTable.getColumnCount()>0){
+            TableColumn column = playTable.getColumnModel().getColumn(0);
+            playTable.removeColumn(column);
+        }
+
+        int k = 0;
+        for (SongColumnConfig scc : SongColumnConfig.values()) {
+            columns.add(scc);
+            TableColumn column = new TableColumn(k++);
+            column.setWidth(scc.getWidth());
+            column.setHeaderValue(scc.getTitile());
+        }
     }
 
     @Override
@@ -26,16 +49,17 @@ public class SongTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 2;
+        return columns.size();
     }
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        switch (columnIndex){
-            case 0: return songs.get(rowIndex).getId();
-            case 1: return songs.get(rowIndex).getName();
-            default:return -1;
-        }
+
+        if (columnIndex<0 || columnIndex>=columns.size()) return -1;
+        if (rowIndex<0 || rowIndex>=songs.size()) return -1;
+
+        SongColumnConfig scc = columns.get(columnIndex);
+        return scc.getValue(songs.get(rowIndex));
     }
 
     public void addSong(Song song) {

@@ -22,9 +22,17 @@ public class MainForm {
     private JTree tree1;
     private JScrollPane scrollPane;
 
+    public static void main(String args[]){
+
+        new MainForm();
+    }
+
     private void initUIComponents() {
 
-        playTable.setModel(new SongTableModel());
+        playTable.setAutoCreateColumnsFromModel(false);
+        SongTableModel songTableModel = new SongTableModel(playTable);
+        playTable.setModel(songTableModel);
+        songTableModel.init();
 
         playTable.setDragEnabled(true);
         playTable.setDropMode(DropMode.INSERT_ROWS);
@@ -40,14 +48,8 @@ public class MainForm {
 
     }
 
-    public static void main(String args[]){
-
-        new MainForm();
-    }
-
     public MainForm(){
 
-        initUIComponents();
 
         JFrame frame = new JFrame("MilongerPlayer");
         //frame.add(new MainForm().workPanel);
@@ -55,7 +57,10 @@ public class MainForm {
         frame.setMenuBar(makeMenuBar());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+
+
         frame.setVisible(true);
+        initUIComponents();
     }
 
     private MenuBar makeMenuBar() {
